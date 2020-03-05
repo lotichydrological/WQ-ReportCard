@@ -1,3 +1,19 @@
+#' Generate a list of sampling organizations.
+#' 
+#' @description Generate a list of organizations that gathered the water quality samples in a given dataset.
+#' 
+#' @param CharacteristicNames Analyte in water sample.
+#' @param Units Measurement units of analyte.
+#' @param valueType Total or other type of value.
+#' @param standardType One day or other type of water quality standard.
+#' @param standard EPA or state standard for water quality impairment.
+#' 
+#' @return List of organizations that gathered water quality samples.
+#' 
+#' @usage orgList(CharacteristicNames, Units, valueType, standardType, standard)
+#' 
+#' @export
+
 orgList = function(characteristicNames, Units, valueType, standardType, standard){
   Data <- get("Data", envir = parent.frame())
   parameterNames = unlist(strsplit(characteristicNames, split = ";")) #Retrieve all the possible parameter names

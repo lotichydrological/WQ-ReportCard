@@ -1,3 +1,19 @@
+#' Retrieve invertebrate sample data 
+#' 
+#' @description Retrieve invertebrate data from the water quality data frame.
+#' Data are filtered to remove values below detection limits and unitless data, and blank values are removed.
+#' 
+#' @param Data Data frame containing raw water quality data.
+#' @param characteristicNames Name of the variable of interest.
+#' @param Units Measurement units of the variable of interest.
+#' @param valueType Measurement type.
+#' 
+#' @return Data frame containing monitoring location, sampling date, water quality variable, and sample value.
+#' 
+#' @usage retrieveInvertebrateData(Data, characteristicNames, Units, valueType)
+#' 
+#' @export
+
 retrieveInvertebrateData = function(Data, characteristicNames, Units, valueType){
   #reformat some of the data columns
   Data$ActivityStartDate = as.Date(strptime(as.character(Data$ActivityStartDate), "%Y-%m-%d")) #format as dates

@@ -1,3 +1,16 @@
+#' Create map of sites summarized by data availability.
+#' 
+#' @description Creates a map of sites with water quality information.  Sites are summarized by data availability.
+#' 
+#' @param watershedData Data frame of all water quality samples generated for the specified watershed using getDataByHUC8 function or manually.
+#' @param monitoringStations Data frame containing attributes of the desired water quality monitoring locations.
+#' 
+#' @return Map of sampling sites in HTML format for viewing in browser.
+#' 
+#' @usage mapSiteData(watershedData, monitoringStations)
+#' 
+#' @export
+
 library(leaflet)
 library(htmlwidgets)
 library(dplyr)
@@ -5,11 +18,6 @@ library(lubridate)
 library(viridis)
 library(RColorBrewer)
 library(pals)
-
-
-# testing
-# dat <- watershedData
-# sites <- monitoringStations
 
 
 mapSiteData <- function(dat, sites){
@@ -109,5 +117,4 @@ mapSiteData <- function(dat, sites){
 }  #end main function
 
 
-#sites$paramNames[sites$MonitoringLocationID == "USGS-09095500"]
 

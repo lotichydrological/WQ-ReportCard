@@ -1,3 +1,21 @@
+#' Evaluate if samples have exceeded standards more than once every 3 years
+#' 
+#' @description Evaluate if the reach is impaired due to too many standard exceedances.
+#' Sample data from water quality data frame is compared to the corresponding water quality standards. 
+#' Reaches are impaired if standards are exceeded more than once every three years as per 303d listing methodology.
+#' As this code runs for 5 years of data, if 2 in 5 years have exceedances the reach is considered impaired.
+#' Determines if exceedances exist in the dataset, if the reach is impaired, and produces an 
+#' assessment of the reach for that parameter.
+#' 
+#' @param Data Data frame containing the raw water quality data.
+#' @param standard Water quality standard for the given parameter
+#' 
+#' @return List stating if standards have been exceeded, if the reach is impaired, and the assessment for that parameter in that reach.
+#' 
+#' @usage one_day_eval(Data, standard)
+#' 
+#' @export 
+
 library(zoo)
 library(hydroTSM)
 
@@ -17,8 +35,6 @@ one_day_eval = function(Data, standard){
   }
   
   Exceedances = ifelse(MaxObs > as.numeric(standard), TRUE, FALSE)
-  #Impaired = ifelse(MaxObs > as.numeric(standard), TRUE, FALSE)   # old code from when RC was run for only 3 years
-  
   
   # The criteria for impairment here is "data indicates nonattainment if the standard is exceeded more frequently than
   # once in three years" (from the listing methodology), since we do this analysis for 5 yrs of data, that's 2 in 5 years (1.666 yrs)

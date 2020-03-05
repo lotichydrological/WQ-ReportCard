@@ -1,41 +1,22 @@
+#' Evaluate multimetric macroinvertebrate index sample data
+#' 
+#' @description Evaluate multimetric macroinvertebrate index data from water quality data frame. 
+#' Reach is assessed by Shannon diversity index or HBI if no MMI data exist, as per Policy 10-1 aquatic life use attainment.  Compares sample results to standards based on 
+#' the biotype of each reach. Determines if exceedances exist in the dataset, if the reach is impaired, and produces an assessment of the reach for that parameter.
+#' 
+#' @param UnusedMMIData Dummy data variable (data retrieved later in code)
+#' @param UnsedDummyArgument Dummy standard variable (standard determined by biotype)
+#' 
+#' @return List stating if standards have been exceeded, if the reach is impaired, and the assessment for that parameter in that reach.
+#' 
+#' @usage mmi_eval(UnusedMMIData,UnusedDummyArgument)
+#' 
+#' @export 
+
 library(reshape2)
 library(reshape)
 
-
-
-###########################333
-# # Use these values only to test a specific site or segment
-# sitename <- "ERWC-ERaRC"
-# sitename <- "ERWC-ERaGC"
-# sitename <- "USFS-gypsmMIS"
-# Data <- watershedData[watershedData$MonitoringLocationIdentifier==sitename,]
-# remove(Data)
-# 
-# HUC="1401000302"
-# hucStations = monitoringStations[monitoringStations$HUC10 == HUC,]
-# segmentname <- "COUCEA10a_6300"
-# segmentname <- "COUCEA02_6300"
-# stationIDs <- as.vector(unique(hucStations$StationID[hucStations$SegmentID == segmentname]))
-# stationIDs
-# 
-# Data <- watershedData[watershedData$MonitoringLocationIdentifier %in% stationIDs,]
-# unique(watershedData$MonitoringLocationIdentifier)
-# 
-# unique(watershedData$ActivityStartDate)
-# remove(Data)
-# remove(hucStations)
-# remove(stationIDs)
-# remove(segmentname)
-# remove(HUC)
-#######################################################################
-
-# This function retrieves all CO_MMI_2010 scores along with associated HBI and Shannon scores 
-# in order to assess standards compliance according to Policy 10-1 Aquatic Life Use Attainment
-
 mmi_eval = function(UnusedMMIData,UnusedDummyArgument){ ## THE MMI STANDARD VARIES BASED ON BIOTYPE OF SITE, THEREFORE DOES NOT NEED A STANDARD PASSED TO IT LIKE THE OTHERS, WILL GET THE STANDARD LATER USING THE 'BIOTYPE_KEY' FILE
-  
-  #take out after it works
-  #debug(retrieveInvertebrateData)
   
   # get the auxiliary metric data + MMI data needed to assess MMI scores
   Data <- get("Data", envir = parent.frame()) #the full data set for the segment
@@ -45,7 +26,6 @@ mmi_eval = function(UnusedMMIData,UnusedDummyArgument){ ## THE MMI STANDARD VARI
   invertebrateData$CharacteristicName[invertebrateData$CharacteristicName =="Shannon Diversity"] <- "Shannon" #Shannon has two different codings, change them all to just 'Shannon'
   auxmetlist <- c("HBI","Shannon Diversity","Shannon")
   
-  #str(invertebrateData)
   #test to see if any auxiliary data has been reported with the mmi data (otherwise the conditional tests below will throw an error)
   #if mmi scores are > 52 without auxiliary data, they can still be assessed
   if( (sum(invertebrateData$CharacteristicName %in% auxmetlist) == 0) & (min(invertebrateData$ResultMeasureValue) < 52 )) {
@@ -70,8 +50,6 @@ mmi_eval = function(UnusedMMIData,UnusedDummyArgument){ ## THE MMI STANDARD VARI
   
   #assign biotypes to each site using the biotype key in program files. the merge will eliminate data points without a biotype assignment
   #if sites do not have a biotype assignment, break and return 'No data' to avoid an error
-  #monStations <- = get("monitoringLocations", envir = parent.frame())
-  #biotypeKey <- read.csv("./Program_files/BiotypeKey_TEST.csv",header=T,stringsAsFactors=F)
   biotypeKey <- monitoringStations[,c("StationID","Biotype")]  # get the two columns from monitoring stations that specify site and biotype
   names(biotypeKey)[names(biotypeKey) == "StationID"] <- "MonitoringLocationIdentifier"  #rename the 'StationID' column for merging with the data
   macroData <- merge(macroData,biotypeKey,"MonitoringLocationIdentifier")

@@ -1,3 +1,18 @@
+#' Evaluate temperature sample data
+#' 
+#' @description Evaluate temperature sample data from water quality data frame. Temperature samples are segregated into summer and winter datasets.  
+#' Summary statistics are then calculated as per WQCD guidance. Determines if exceedances exist in the dataset, if the reach is impaired, and produces an 
+#' assessment of the reach for that parameter.
+#' 
+#' @param Data Data frame containing the raw water quality data.
+#' @param standard Water quality standard for the given parameter
+#' 
+#' @return List stating if standards have been exceeded, if the reach is impaired, and the assessment for that parameter in that reach.
+#' 
+#' @usage temp_eval(Data, standard)
+#' 
+#' @export 
+
 library(zoo)
 
 temp_eval = function(Data, standard){

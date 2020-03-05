@@ -1,30 +1,25 @@
-
-# put this into 'summaryCalcs()' below the Percentile_85th() calculation and above the somputeStandards block.
-##############################################
-
-#Trend_5yr = if( n > 0 & ( (Censored / n ) > 0.5) & standardType != "severity" & standardType != "manual"){
-#  calculateTrend(numericalData)
-#} else Trend_5yr <- c(-9999,-9999)
-#TrendSlope <- Trend_5yr[1]
-#Pvalue     <- Trend_5yr[2]
-
-
-####################################3333
-
+#' Test a time-series dataset for a monotonic trend using the Seasonal Kendall Test
+#' from the R package 'rkt'
+#' 
+#' @description Test data for appropriate use in Seasonal Kendall Test with these criteria:
+#' 1) 5 years of data minimum
+#' 2) first and last 1/3rd of time range includes at least 20% of data coverage (Helsel and Hirsch)
+#' 3) at least 1 data point in every seasonal block, (required for package rkt() not to fail)
+#' 4)  <50% censoring of data (checked prior to launching function) 
+#' If these criteria are not met, the function returns an empty summary.
+#' 
+#' @param data Data frame of numerical water quality data.
+#' 
+#' @return Summary list containing slope and P-value from the Seasonal Kendall Test.  If criteria are not met, an empty summary is returned.
+#' 
+#' @usage calculateTrend(data)
+#' 
+#' @export
 
 library(rkt)
 
-# This function tests a time-series dataset for a monotonic trend using the Seasonal Kendall Test
-# from the R package 'rkt'
-
 calculateTrend = function(data){
     
-  # Test data for appropriate use in Seasonal Kendall test with these criteria:
-  # 1) 5 years of data minimum
-  # 2) first and last 1/3rd of time range includes at least 20% of data coverage (Helsel and Hirsch)
-  # 3) at least 1 data point in every seasonal block, (required for package rkt() not to fail)
-  # 4)  <50% censoring of data (checked prior to launching function) 
-  
   #Data equaully distributed
   
   SampleDates = data.frame("SampleDates"=seq(as.Date(StartDate, "%m-%d-%Y"), as.Date(EndDate, "%m-%d-%Y"), by="days"))

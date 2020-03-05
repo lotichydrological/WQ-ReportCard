@@ -1,3 +1,18 @@
+#' Find date of maximum data value
+#' 
+#' @description Find date on which maximum value occurred.  Converts blank values to zero as per WQCD regulations.
+#' 
+#' @param characteristicNames Name of the water quality variable of interest.
+#' @param Units Measurement units of the water quality variable of interest.
+#' @param valueType Measurement type.
+#' @param Maximum Maximum detected value for the parameter over the time period.
+#' 
+#' @return Date on which maximum value occurred of type character.
+#'
+#' @usage maxDate(characteristicNames, Units, valueType, Maximum)  
+#' 
+#' @export
+
 maxDate = function(characteristicNames, Units, valueType, Maximum){
   Data <- get("Data", envir = parent.frame())
   #Reformat some columns
