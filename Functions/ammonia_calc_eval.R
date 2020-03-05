@@ -1,3 +1,18 @@
+#' Evaluate ammonia sample data
+#' 
+#' @description Evaluate ammonia sample data from water quality data frame. If more than one sample exists, a rolling mean of sample values is calculated.  
+#' Summary statistics are then calculated as per WQCD guidance. Determines if exceedances exist in the dataset, if the reach is impaired, and produces an 
+#' assessment of the reach for that parameter.
+#' 
+#' @param Data Data frame containing the raw water quality data.
+#' @param standard Water quality standard for the given parameter
+#' 
+#' @return List stating if standards have been exceeded, if the reach is impaired, and the assessment for that parameter in that reach.
+#' 
+#' @usage ammonia_calc_eval(Data, standard)
+#' 
+#' @export 
+
 library(zoo)
 library(hydroTSM)
 

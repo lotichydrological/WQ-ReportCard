@@ -1,3 +1,20 @@
+#' Evaluate hardness sample data
+#' 
+#' @description Evaluate hardness sample data from water quality data frame. Does not calculate f no pH data is reported.
+#' If more than one sample exists, a rolling mean of sample values is calculated. 
+#' If the hardness standard is seasonal, samples are segregated by high metals months and low metals months. 
+#' Summary statistics are then calculated as per WQCD guidance. Determines if exceedances exist in the dataset, if the reach is impaired, and produces an 
+#' assessment of the reach for that parameter.
+#' 
+#' @param Data Data frame containing the raw water quality data.
+#' @param standard Water quality standard for the given parameter
+#' 
+#' @return List stating if standards have been exceeded, if the reach is impaired, and the assessment for that parameter in that reach.
+#' 
+#' @usage hardness_calc_eval(Data, standard)
+#' 
+#' @export 
+
 library(zoo)
 library(hydroTSM)
 
@@ -8,9 +25,13 @@ hardness_calc_eval = function(Data, standard){
   parameter <- get("Indicator", envir = parent.frame()) #access the parameter name
   pHData <- get("pHData", envir = parent.frame()) #pass in the pH data time series
   
-  pH = mean(pHData$ResultMeasureValue, na.rm = TRUE)
-  
-  #calculate the mean hardness during low flow periods
+  pH = mean(pHData$ResultMeasureValue, na.rm = TRUE) #this value gets used in the standard calculation eval call.
+  # If there is no pH data reported, no metal standard can be calculated, return NAs and break from function
+  if(is.nan(pH)){
+    return(c(NA, NA, NA))
+  }
+
+    #calculate the mean hardness during low flow periods
   if (length(unique(as.vector(hardnessData$ActivityStartDate))) == 1) {
     if (parameter == "Aluminum") {
       hardness = min(220, hardnessData$ResultMeasureValue) 
@@ -32,20 +53,30 @@ hardness_calc_eval = function(Data, standard){
       hardness = min(400, mean(coredata(lowFlowHardness)), na.rm = TRUE) 
     }
   }
-  if (nrow(Data) == 1 | ( nrow(Data)>1 & length(unique(Data$ActivityStartDate))==1) ){   #second conditions applies if samples all on same date
+  if (nrow(Data) == 1){
     sampleData = read.zoo(Data, header = TRUE, format = "%Y-%m-%d", aggregate = mean) #read in the irregular time series and average values collected on the same day
   } else {
   irregularSeries = read.zoo(Data, header = TRUE, format = "%Y-%m-%d", aggregate = mean) #read in the irregular time series and average values collected on the same day
   regularSeries = izoo2rzoo(irregularSeries, from = StartDate, to = EndDate, date.fmt = "%m-%d-%Y", tstep = "days") #then make it regular on a daily time step across the entire time period of interest
   rollingMean = rollapply(regularSeries, 30, mean, na.rm = TRUE) #calculate a rolling 30 day mean
   sampleDates = unique(as.list(Data$ActivityStartDate)) #retrieve the list of unique sampling dates from the original data set
-  sampleData = rollingMean[sampleDates] #then pull only those dates from the regular time series
+  if(length(sampleDates)>1){
+    sampleData = rollingMean[sampleDates] #then pull only those dates from the regular time series
+  } else {
+    sampleData = read.zoo(Data, header = TRUE, format = "%Y-%m-%d", aggregate = mean) # account for instances in which there is 2 observations from one single day only
+  }
+ 
   }
   
+  print(paste("hardness ", hardness))
+  print(paste("Mean pH: ", pH))
+  #print(standard)
+  standard_test <- eval(parse(text = standard))
+  print(paste("Calculated standard is: ", standard_test, sep=""))
   
   #Evaluate on the seasonal hardness standard for segments with that kind of standard
   
-  if(length(pHData$ResultMeasureValue)==0){   #for aluminum sites with no pH data, which will break the standard eval()
+  if( length(pHData[1]) < 1 | is.null(pHData) ) {
     Exceedances <- NA
     Impaired <- NA
     Assessment <- "Poor Resolution"
@@ -122,4 +153,6 @@ hardness_calc_eval = function(Data, standard){
     }
   }
   return(c(Exceedances, Impaired, Assessment))
+  #if you want to return the actual numeric value for the standard that was calculated, use this:
+  #return(c(Exceedances, Impaired, Assessment, standard))
 }

@@ -30,7 +30,7 @@
 #;       INITIALIZE WORKING ENVIRONMENT
 
 # Workind directory will already be set if you opened the project from its directory in windows explorer
-setwd("G:/Shared drives/Projects/MCWC/Data/water_quality/WQ_report_card/Code/report_card_30yr")
+setwd("D:/wq_report_card/WQ-ReportCard")
 
 # Initialize program and clear workspace
 rm(list = ls())
@@ -87,7 +87,7 @@ HUC8 <- "14010005" #COLORADO HEADWATERS-PLATEAU
 
 
 # Load the dataset
-watershedData <- read.csv(file="./Data/Combined_14010001_14010005_dataSheet.2019-12-23.csv",header=T,stringsAsFactors=F,strip.white=T) #retrieve the datasheet
+watershedData <- read.csv(file="./Data/HUC_14010005_dataSheet.2020-02-24.csv",header=T,stringsAsFactors=F,strip.white=T) #retrieve the datasheet
 
 #' Format dates
 watershedData$ActivityStartDate <- as.Date(watershedData$ActivityStartDate, tryFormats = c("%Y-%m-%d", "%m/%d/%Y")) #format as dates

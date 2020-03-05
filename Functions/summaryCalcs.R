@@ -39,6 +39,26 @@
 # # End debugging section
 #################################################################################################################################################
 
+#' Calculates summary statistics for water quality sample data.
+#' 
+#' @description Performs report card summary functions on water quality sample data and returns a data frame including summary statistics of all parameters and 
+#' assessments of impairment.
+#' 
+#' @param UseClass Type of water quality parameter.
+#' @param Category Category of sample collection type.
+#' @param Indicator Analyte in water sample.
+#' @param CharacteristicNames Analyte in water sample.
+#' @param Units Measurement units of analyte.
+#' @param valueType Total or other type of value.
+#' @param standardType One day or other type of water quality standard.
+#' @param standard EPA or state standard for water quality impairment.
+#' 
+#' @return Data frame containing the summary statistics for the water quality sample data.
+#' 
+#' @usage summarycalcs(UseClass, Category, Indicator, CharacteristicNames, Units, valueType, standardType, standard)
+#' 
+#' @export
+
 summaryCalcs = function(UseClass, Category, Indicator, CharacteristicNames, Units, valueType, standardType, standard){
   segmentName <- get("segmentName", envir = parent.frame())
   Data <- get("Data", envir = parent.frame()) #the full data set for the segment
@@ -113,7 +133,7 @@ if (n > 0 & standardType != "severity" & standardType != "manual"){
 }
  
   # Console status update, for troubleshooting if crashing to see where/when
-  print(paste("Currently assessing", failparameter, "for", UseClass, "use."))
+  # print(paste("Currently assessing", failparameter, "for", UseClass, "use."))
   
   computeStandards = if (n > 0 & standardType == "severity"){
     #read in the type of function required as indicated by the standardType

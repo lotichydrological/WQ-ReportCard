@@ -1,3 +1,17 @@
+#' Find sampling locations per segment
+#' 
+#' @description Find water quality sampling locations for a desired strea segment. 
+#' Returns a list of sampling sites and creates a table GROB from the dataframe.
+#' 
+#' @param segmentName String of the desired stream segment name.
+#' @param Data Data frame containing the raw water quality data.
+#' 
+#' @return Data frame containing the station list and number of samples per station.
+#' 
+#' @usage findSampleLocations(segmentName, Data)
+#' 
+#' @export
+
 library(plyr)
 library(tools)
 library(gplots)
@@ -5,20 +19,11 @@ library(grid)
 library(gridExtra)
 library(gtable)
 
-
-countSamples = function(monitoringStation, Data){
-  stationData = Data[Data$MonitoringLocationIdentifier == monitoringStation,]
-  numSamples = length(unique(stationData$ActivityStartDate))
-  output = data.frame("Monitoring Location" = monitoringStation, "# Samples" = as.numeric(numSamples))
-  return(output)
-}
-
 findSampleLocations = function(segmentName, Data){
   uniqueStations = unique(as.list(Data$MonitoringLocationIdentifier))
   stationList <- do.call(rbind, lapply(uniqueStations, countSamples, Data))
   colnames(stationList) <- c("Monitoring Location", "# Samples")
-  #TableName = paste(c("./Figures/site_tables",HUC,"_",segment,"_MonSites.png"),collapse="")
-  TableName <- paste(c("./Figures/site_tables/",segment,"_MonSites.png"),collapse="")    
+  TableName <- paste(c("./Figures/site_tables/",segmentName,"_MonSites.png"),collapse="")    
   
   
   png(TableName, height=( (nrow(stationList) * 22) + 55 ), width = 450, units="px", pointsize=12) # for 12 pt font, each row is 16 pixels high, + extra padding for titles etc
@@ -32,7 +37,7 @@ findSampleLocations = function(segmentName, Data){
         #set up the title information
         minYear <- as.character(min(year(Data$ActivityStartDate), na.rm=T))
         maxYear <- as.character(max(year(Data$ActivityStartDate), na.rm=T))
-        caption <- paste("Active sites, ", minYear, " to ", maxYear,", Segment: ", segment, sep="")
+        caption <- paste("Active sites, ", minYear, " to ", maxYear,", Segment: ", segmentName, sep="")
         title <- textGrob(caption,gp=gpar(fontsize=12, fontface="bold"))
         padding <- unit(1,"line") 
 

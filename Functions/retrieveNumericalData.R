@@ -1,3 +1,19 @@
+#' Retrieve numerical data for a water quality parameter
+#' 
+#' @description Retrieve numerical data for a desired water quality parameter from the water quality data frame.
+#' Data are filtered to remove values below detection or reporting limits, and blank values are converted to zero as per WQCD regulations.
+#' 
+#' @param Data Data frame containing raw water quality data.
+#' @param characteristicNames Name of the water quality variable of interest.
+#' @param Units Measurement units of the water quality variable of interest.
+#' @param valueType Measurement type.
+#' 
+#' @return Data frame containing sampling dates and results.
+#' 
+#' @usage retrieveNumericalData(Data, characteristicNames, Units, valueType)
+#' 
+#' @export
+
 retrieveNumericalData = function(Data, characteristicNames, Units, valueType){
   #reformat some of the data columns
   Data$ActivityStartDate = as.Date(strptime(as.character(Data$ActivityStartDate), "%Y-%m-%d")) #format as dates
@@ -17,7 +33,5 @@ retrieveNumericalData = function(Data, characteristicNames, Units, valueType){
   CharacteristicName = dataSet$CharacteristicName
   MonitoringLocationIdentifier = dataSet$MonitoringLocationIdentifier
   auxMetric_list <- c("HBI","Shannon Diversity")
-  #if(sum(parameterNames %in% auxMetric_list)>0) {return(data.frame(MonitoringLocationIdentifier, ActivityStartDate, CharacteristicName, ResultMeasureValue))}
-  #else {return(data.frame(ActivityStartDate, ResultMeasureValue))}
   return(data.frame(ActivityStartDate, ResultMeasureValue))
 }

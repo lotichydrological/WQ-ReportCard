@@ -1,3 +1,20 @@
+#' Evaluate if the geometric mean of sample values over a two month period exceeds the water quality standard
+#' 
+#' @description Evaluate if the reach is impaired due to too many standard exceedances.
+#' Sample data from water quality data frame is compared to the corresponding water quality standards. 
+#' Reaches are impaired if the geometric mean of sample values exceeds the standard over a 60 day period.
+#' Determines if exceedances exist in the dataset, if the reach is impaired, and produces an 
+#' assessment of the reach for that parameter.
+#' 
+#' @param Data Data frame containing the raw water quality data.
+#' @param standard Water quality standard for the given parameter
+#' 
+#' @return List stating if standards have been exceeded, if the reach is impaired, and the assessment for that parameter in that reach.
+#' 
+#' @usage two_month_geometric_mean_eval(Data, standard)
+#' 
+#' @export 
+
 library(zoo)
 library(hydroTSM)
 

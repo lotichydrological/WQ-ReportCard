@@ -1,10 +1,18 @@
-# #for debugging:
-# segmentName <- "COLCLC02a_A"
-# wqData <- read.csv()
+#' Plot hydrograph of segment discharge with sample dates.
+#' 
+#' @description Generates hydrograph plots for the nearest USGS gage to each stream segment,
+#' with sampling dates plotted to indicate the flow conditions during sample collection.
+#' 
+#' @param segmentName String of the desired segment name.
+#' @param wqData Data frame of water quality observations corresponding to each segment.
+#' 
+#' @return PNG plot of segment hydroraph during period of record with collection dates highlighted.
+#' 
+#' @usage plotDischarge(segmentName, wqData)
+#' 
+#' @export
 
-##########################################################################################
 
-#plotDischarge = function(HUC10, segmentName, wqData){
 plotDischarge = function(segmentName, wqData){
   segInfo = dischargeStations[dischargeStations$SegmentID == segment,]
   stationID = segInfo[1,3]
@@ -17,7 +25,6 @@ plotDischarge = function(segmentName, wqData){
   #Retrieve streamflow data
   baseURL = c("http://waterservices.usgs.gov/nwis/dv/?site=",stationID,"&startDT=",startDate,"&endDT=",endDate,"&parameterCd=00060&format=rdb")
   URL = URLencode(paste(baseURL, collapse=''))
-  #print(URL)   #(for debugging if needed)
   #retrieve data from NWIS REST API
   qData = read.table(paste(URL), header=TRUE, sep="\t", strip.white=TRUE) 
   qData = qData[-1,] #remove first header row
@@ -28,7 +35,6 @@ plotDischarge = function(segmentName, wqData){
   obsQ = qData[qData$dateTime %in% obsDates,]
   datesToShow = seq(from = as.Date(startDate, format='%Y-%m-%d'),to = as.Date(endDate,format='%Y-%m-%d'), by="month")
   #plot the data
-  #filename <- paste(c("./Figures/",HUC10,"_",segment,"_Q_plot.png"),collapse="")
   filename <- paste(c("./Figures/qPlots/",segment,"_Q_plot.png"),collapse="")
   png(filename, width = 6.5, height = 2.35, units = "in", res=400, pointsize=7)
   par(mai=c(0.25,0.75,0.25,0.25))
@@ -36,10 +42,6 @@ plotDischarge = function(segmentName, wqData){
                     segment,
                     ". Streamflow (blue) derived from nearest available USGS gauge \nstation may not be representative of locations for the segment but provides a general sense of hydrological conditions during sampling."), 
                   collapse="")
-  # plot(qData$dateTime, qData$Q, 
-  #      type = "l", col = "blue", 
-  #      xlab = "Date", ylab = paste(c("Discharge (cfs) measured at \nUSGS station ",stationID), collapse=''), 
-  #      at = datesToShow, format = "%b-%y")
   plot(qData$dateTime, qData$Q, 
        type = "l", col = "blue", 
        xlab ='', ylab = paste(c("Discharge (cfs) measured at \nUSGS station ",stationID), collapse=''))

@@ -1,4 +1,20 @@
+#' Aggregate data by segment and summarize
+#' 
+#' @description Aggregates water quality data by river segment and summarizes statistics per segment.  
+#' Creates summary tables, hydrograph plots, sample date plots, and summary bar plots for each segment. 
+#' Outputs a comma separated file of  the summary data.
+#' 
+#' @param segmentName String of the desired segment name to summarize.
+#' @param monitoringStations List of station IDs per segment where water quality parameters have been collected.
+#' 
+#' @return Returns summary tables, hydrograph plots, sample date plots, and summary bar plots for each segment.
+#' 
+#' @usage summarizeSegments(segmentName, monitoringStations)
+#' 
+#' @export
+
 library(dplyr)
+library(xlsx)
 
 summarizeSegments = function(segmentName, monitoringStations){
   
@@ -46,15 +62,28 @@ summarizeSegments = function(segmentName, monitoringStations){
   
   findSampleLocations(segmentName, Data) #create summary tables for the samples collected on each segment
   
-  #plotDischarge(HUC10, segmentName, Data) #create hydrographs and sample dates figure for each segment
   plotDischarge(segmentName, Data) #create hydrographs and sample dates figure for each segment
   
-  #summaryBarCharts(HUC10, segmentName, output)
   summaryBarCharts(segmentName, output)
   
   #change any slashes in the segment or site name to a dash so they don't break the file path when writing
   # for example, Reg 85 sites names with 'U/S' and 'D/S' will be fixed
   segmentName <- gsub("/","-", segmentName)
+  
+  # retrieve list of parameters of concern
+  parameters = output$Indicator[output$Assessment=="Concern"| output$Assessment=="Poor"]
+  params <- vapply(parameters, paste, collapse = ", ", character(1L))
+  
+  # retrieve reach description
+  reach_description <- as.vector(unique(monitoringStations[15][monitoringStations[13] == segmentName]))
+  
+  # build water quality appendix document
+  buildWQAppendix(segmentName, params, reach_description)
+  
+  # write water quality excel document
+  xl_name = "REPORT_CARD.xlsx"
+  summary <- output[,c("UseClass", "Category", "Indicator", "n", "Censored", "StandardsExceeded", "Impaired", "Assessment")]
+  write.xlsx(summary, file = xl_name, sheetName = segmentName, append = TRUE, showNA = FALSE)
   
   #write summary data to file
   x = c("./Output/", segmentName, ".csv")
