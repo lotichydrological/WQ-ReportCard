@@ -75,8 +75,10 @@ summarizeSegments = function(segmentName, monitoringStations){
   params <- vapply(parameters, paste, collapse = ", ", character(1L))
   
   # retrieve reach description
-  reach_description <- as.vector(unique(monitoringStations[15][monitoringStations[13] == segmentName]))
-  
+  monitoringlist <- get("monitoringStations", envir = parent.frame())
+  segs <- subset(monitoringlist, AUID %in% segmentName, select = PortionDes)
+  reach_description <- segs[1,1]
+  # 
   # build water quality appendix document
   buildWQAppendix(segmentName, params, reach_description)
   
@@ -89,6 +91,10 @@ summarizeSegments = function(segmentName, monitoringStations){
   x = c("./Output/", segmentName, ".csv")
   outputName = paste(x, collapse='')
   write.table(output, file=outputName, sep=",", row.names=FALSE)
+  
+  # save R object of data frame to access later
+  saveRDS(output, paste("Output/",segmentName,".rds",sep = ""))
+  
   print("Complete")
   return(output)
 

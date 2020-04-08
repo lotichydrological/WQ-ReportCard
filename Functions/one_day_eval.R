@@ -51,17 +51,17 @@ one_day_eval = function(Data, standard){
     # see if any occurred in the last 3 consecutive years
     endYear <- year(as.Date(EndDate, format="%m-%d-%Y"))
     exceedInLastThree <- (yearsWithExceed %in% seq(endYear,endYear-2,-1) )
-    if(yearsWithExceed%in% seq(endYear, endYear-2, -1)){exceedInLastThree <- T}
+    if(any(yearsWithExceed %in% seq(endYear, endYear-2, -1))){exceedInLastThree <- TRUE}
     
     # if 'exceedInLastThree' = TRUE and 'yearsWithExceed' >=2, then impairment threshold is reached
-    Impaired <- (exceedInLastThree == T & length(yearsWithExceed) >= 2)
-  } else {Impaired <- F}
+    Impaired <- (isTRUE(exceedInLastThree) & length(yearsWithExceed) >= 2)
+  } else {Impaired <- FALSE}
  
   #if there is a standard for the parameter, evaluate it, if not, return NA)
-  Assessment = ifelse( !is.na(as.numeric(standard)),  
-    if(Impaired == TRUE){
+  Assessment = ifelse(!is.na(as.numeric(standard)),  
+    if(isTRUE(Impaired)){
       "Poor"
-    }else if (X85th >= 0.5*(as.numeric(standard)) & Exceedances == TRUE){
+    }else if (X85th >= 0.5*(as.numeric(standard)) & isTRUE(Exceedances)){
       "Concern" 
     }else if (X85th >= 0.5*(as.numeric(standard)) & Exceedances == FALSE){
       "Acceptable" 

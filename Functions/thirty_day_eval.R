@@ -43,9 +43,9 @@ thirty_day_eval = function(Data, standard){
     Impaired = ifelse(MedObs > as.numeric(standard), TRUE, FALSE)
     
     Assessment = ifelse( !is.na(as.numeric(standard)),  
-                         if(Impaired == TRUE){
+                         if(isTRUE(Impaired)){
                            "Poor"
-                         }else if (MedObs >= 0.5*(as.numeric(standard)) & Exceedances == TRUE){
+                         }else if (MedObs >= 0.5*(as.numeric(standard)) & isTRUE(Exceedances)){
                            "Concern" 
                          }else if (MedObs >= 0.5*(as.numeric(standard)) & Exceedances == FALSE){
                            "Acceptable" 
@@ -58,9 +58,9 @@ thirty_day_eval = function(Data, standard){
     Exceedances = ifelse(MaxObs> as.numeric(standard), TRUE, FALSE)
     Impaired = ifelse(X85th > as.numeric(standard), TRUE, FALSE)
     Assessment = ifelse( !is.na(as.numeric(standard)),  
-                         if(Impaired == TRUE){
+                         if(isTRUE(Impaired)){
                            "Poor"
-                         }else if (X85th >= 0.5*(as.numeric(standard)) & Exceedances == TRUE){
+                         }else if (X85th >= 0.5*(as.numeric(standard)) & isTRUE(Exceedances)){
                            "Concern" 
                          }else if (X85th >= 0.5*(as.numeric(standard)) & Exceedances == FALSE){
                            "Acceptable" 
