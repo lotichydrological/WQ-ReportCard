@@ -173,5 +173,6 @@ if (n > 0 & standardType != "severity" & standardType != "manual"){
     Impaired,
     Assessment
     )
+
   return(evaluation)
 }

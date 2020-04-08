@@ -17,6 +17,8 @@
 retrieveNumericalData = function(Data, characteristicNames, Units, valueType){
   #reformat some of the data columns
   Data$ActivityStartDate = as.Date(strptime(as.character(Data$ActivityStartDate), "%Y-%m-%d")) #format as dates
+  recoverable_fraction_names <- c("Recoverable", "Total Recovrble", "Total Recoverable")
+  Data$ResultSampleFractionText[Data$ResultSampleFractionText %in% recoverable_fraction_names] <- "Total"
   Data$ResultSampleFractionText[Data$ResultSampleFractionText=="Recoverable"] = "Total" 
   Data$ResultMeasureValue =  as.numeric(as.character(Data$ResultMeasureValue)) #convert columns to numeric
   Data$ResultMeasureValue[Data$ResultMeasureValue==""] = NA #convert blanks to NA

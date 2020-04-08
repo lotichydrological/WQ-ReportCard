@@ -56,7 +56,7 @@ remove_stations <- c("","","")
 monitoringStations <- monitoringStations[!(monitoringStations$MonitoringLocationID %in% remove_stations),]
 
 # read in segment standards
-wqStandards <- read.csv(file="./Program_Files/2018_Standards.csv", header=TRUE, stringsAsFactors=F)
+wqStandards <- read.csv(file="./Program_Files/2018_Standards_new.csv", header=TRUE, stringsAsFactors=F)
 
 # read in the gauge site key
 dischargeStations <- read.csv('./Program_Files/discharge_stations_MCW.csv', 
@@ -88,7 +88,7 @@ HUC8 <- "14010005" #COLORADO HEADWATERS-PLATEAU
 
 
 # Load the dataset
-watershedData <- read.csv(file="./Data/HUC_14010005_dataSheet.2020-02-26.csv",header=T,sep = "",stringsAsFactors=F,strip.white=T) #retrieve the datasheet
+watershedData <- read.csv(file="./Data/Combined_14010001_14010005_dataSheet.2019-12-23.csv",header=T,stringsAsFactors=F,strip.white=T) #retrieve the datasheet
 
 #' Format dates
 watershedData$ActivityStartDate <- as.Date(watershedData$ActivityStartDate, tryFormats = c("%Y-%m-%d", "%m/%d/%Y")) #format as dates
@@ -136,10 +136,11 @@ print(paste("Total number of segments: ", length(segmentIDs), sep=''))
 # for running the whole program in parts, a segment at a time, or if some sites 
 # run but others have bugs...
 
-exclude <-c("COLCLC15a_A", "COLCLC15b_A", "COLCLC15c_A", "COLCLC15d_A", "COLCLC16_A" , "COLCLC17a_A", "COLCLC17b_A","COLCLC04a_B", "COLCLC02a_A", "COLCLC14c_C", "COLCLC14c_B", "COLCLC15d_A", "COLCLC16_A" 
-            ,"COLCLC15a_A", "COLCLC15c_A", "COLCLC13a_B", "COLCLC13a_A", "COLCLC12b_A", "COLCLC04d_A", "COLCLC04a_A" ,"COLCLC06_A",  "COLCLC11b_A" ,"COLCLC11f_A" ,"COLCLC17b_A"
-            ,"COLCLC10_A",  "COLCLC10_B" , "COLCLC04a_C", "COLCLC04c_A" ,"COLCLC14a_A", "COLCLC11h_A", "COLCLC04e_A", "COLCLC17a_A", "COLCLC09a_A", "COLCLC04a_D" ,"COLCLC14b_A"
-            ,"COLCLC11g_A", "COLCLC11e_A", "COLCLC08_A"  ,"COLCLC11a_A" ,"COLCLC15b_A", "COLCLC09c_A")
+# exclude <-c("COLCLC01_A","COLCLC15a_A", "COLCLC15b_A", "COLCLC15c_A", "COLCLC15d_A", "COLCLC16_A" , "COLCLC17a_A", "COLCLC17b_A","COLCLC04a_B", "COLCLC02a_A", "COLCLC14c_C", "COLCLC14c_B", "COLCLC15d_A", "COLCLC16_A" 
+#             ,"COLCLC15a_A", "COLCLC15c_A", "COLCLC13a_B", "COLCLC13a_A", "COLCLC12b_A", "COLCLC04d_A", "COLCLC04a_A" ,"COLCLC06_A",  "COLCLC11b_A" ,"COLCLC11f_A" ,"COLCLC17b_A"
+#             ,"COLCLC10_A",  "COLCLC10_B" , "COLCLC04a_C", "COLCLC04c_A" ,"COLCLC14a_A", "COLCLC11h_A", "COLCLC04e_A", "COLCLC17a_A", "COLCLC09a_A", "COLCLC04a_D" ,"COLCLC14b_A"
+#             ,"COLCLC11g_A", "COLCLC11e_A", "COLCLC08_A"  ,"COLCLC11a_A" ,"COLCLC15b_A", "COLCLC09c_A")
+exclude <- c("COLCLC15a_A","COLCLC15b_A","COLCLC15d_A","COLCLC16_A" , "COLCLC17a_A", "COLCLC17b_A")
 completed <- c()
 completed <-sub(".csv" ,"" ,list.files(pattern="[.]csv$", path="./Output/", full.names=F))
 segment_list <- sort(unique(segmentIDs)[!(unique(segmentIDs) %in% completed) & !(unique(segmentIDs) %in% exclude)])
@@ -183,6 +184,8 @@ for (segment in segment_list){
 
 
 ############################################################################## 
+
+buildAssessTable(segment_list)
 
 #' Miscellaneous troublshooting code
 #' 

@@ -30,9 +30,9 @@ standardize_units <- function(dataset){
     dataset$ResultMeasureValue[((dataset$CharacteristicName %in% TN_forms) |
                                 (dataset$CharacteristicName %in% TP_forms)) &
                                  dataset$ResultMeasure.MeasureUnitCode == "mg/l"] <- 
-        dataset$ResultMeasureValue[((dataset$CharacteristicName %in% TN_forms) |
+        as.numeric(dataset$ResultMeasureValue[((dataset$CharacteristicName %in% TN_forms) |
                                     (dataset$CharacteristicName %in% TP_forms)) &
-                                     dataset$ResultMeasure.MeasureUnitCode == "mg/l"] * 1000
+                                     dataset$ResultMeasure.MeasureUnitCode == "mg/l"]) * 1000
     
     # re-label the units from mg/l to ug/l
     dataset$ResultMeasure.MeasureUnitCode[((dataset$CharacteristicName %in% TN_forms) |
